@@ -1,8 +1,7 @@
 class Node:
-    def __init__(self, data=None, next=None, prev=None):
+    def __init__(self, data=None, next=None):
         self.data = data
         self.next = next
-        self.prev = prev
 
 class LinkedList:
     def __init__(self):
@@ -12,14 +11,14 @@ class LinkedList:
 
     def insertBeg(self, new_data):    
         if self.head == None:
-            new_node = Node(new_data, None, None)
-            self.head = new_node
+            self.head = Node(new_data)
             self.tail = self.head
             self.count += 1
+            return
         else:
-            node = self.head
-            new_node(new_data,node,None)
-            self.head = new_node  
+            old_head = self.head
+            self.head = Node(new_data)
+            self.head.next = old_head
             self.count += 1 
 
         
@@ -27,8 +26,16 @@ class LinkedList:
         
     # Insert at the end
     def insertEnd(self, new_data):
-        pass
-
+        if self.head == None:
+            self.head = Node(new_data)
+            self.tail = self.head
+            return
+        else:
+            current_node = self.head
+            while current_node.next != None:
+                current_node = current_node.next
+            current_node.next = Node(new_data)
+            
     # Insert after a node
     def insertAfter(self, data, new_data):
         pass
@@ -48,11 +55,7 @@ class LinkedList:
      # Print the linked list
     def printList(self):
         current_node = self.head
-        if current_node != None and current_node.next == None:
+        while current_node != None:
             print(current_node.data)
-        else:
-            while current_node.next != None:
-                print(current_node.data)
-                current_node = current_node.next
+            current_node = current_node.next
 
-    
