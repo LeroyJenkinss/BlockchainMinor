@@ -1,3 +1,6 @@
+from calendar import c
+
+
 class Node:
     def __init__(self, data=None, next=None):
         self.data = data
@@ -6,24 +9,20 @@ class Node:
 class LinkedList:
     def __init__(self):
         self.head = None
-        self.tail = None
-        self.count = 0
+       
 
     def insertBeg(self, new_data):    
         if self.head == None:
             self.head = Node(new_data)
             self.tail = self.head
-            self.count += 1
+           
             return
         else:
             old_head = self.head
             self.head = Node(new_data)
             self.head.next = old_head
-            self.count += 1 
-
-        
+            
     
-        
     # Insert at the end
     def insertEnd(self, new_data):
         if self.head == None:
@@ -35,15 +34,38 @@ class LinkedList:
             while current_node.next != None:
                 current_node = current_node.next
             current_node.next = Node(new_data)
+            return
             
-    # Insert after a node
+    # Insert after a node llist.insertAfter(2, 4)
     def insertAfter(self, data, new_data):
-        pass
-
+        if self.head == None:
+            return
+        current_node = self.head
+        if current_node.data == data:
+            nextNode = current_node.next
+            current_node.next = Node(new_data)
+            current_node.next.next = nextNode
+            return
+        while current_node.next != None or current_node.data == data:
+            if current_node.data == data:
+                nextNode = current_node.next
+                current_node.next = Node(new_data,nextNode)
+                return
+            current_node = current_node.next  
+            
     # Deleting a node at a specific index
     def deleteIndex(self, index):
-        pass
-
+        if index == 0:
+            self.head = self.head.next
+        count = 1
+        current_node = self.head
+        while current_node.next != None:
+            if count == index:
+                current_node.next = current_node.next.next
+                return
+            current_node = current_node.next
+            count += 1
+        
     # Search an element
     def find(self, key):
         return -1
