@@ -1,14 +1,17 @@
 
 class SongNode:
-    def __init__(self, song_title=None, next = None):
+    def __init__(self, song_title=None, next = None, prev = None):
         self.song_title = song_title
         self.next = next
+        self.prev = prev
     
    
 
 class SongList:
     def __init__(self):  
         self.head = None
+        self.tail = None
+        self.count = 0
         
 
     def printSongs(self):
@@ -20,9 +23,10 @@ class SongList:
 
     def AddNewSong(self, new_song_title):
         if self.head == None:
-            self.head = new_song_title
+            self.head = SongNode(new_song_title)
+            self.tail = self.head
         node = self.head
         while node.next != None:
             node = node.next
-        node.next = SongNode(new_song_title)
+        node.next = SongNode(new_song_title,None,node)
         

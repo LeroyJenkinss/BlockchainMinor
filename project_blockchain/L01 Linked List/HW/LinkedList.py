@@ -1,4 +1,4 @@
-from calendar import c
+# Tarik Ualit 0995543 dinf3
 
 
 class Node:
@@ -16,7 +16,7 @@ class LinkedList:
             self.head = Node(new_data)
             self.tail = self.head
             return
-            
+
         else:
             old_head = self.head
             self.head = Node(new_data)
