@@ -4,6 +4,7 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.backends import default_backend
 import pickle
 
 def generate_keys():
@@ -40,14 +41,14 @@ def verify(message, signature, public_key):
         return False
 
 def save_keys(keys_file_name, keys, pw):
-    if pw == '1999':
+    
         
         keysOutput = ()
         
         (private_key, public_key)  = keys 
         private_keyOutput = private_key.private_bytes(
             encoding = serialization.Encoding.PEM, format = serialization.PrivateFormat.TraditionalOpenSSL,
-            encryption_algorithm = serialization.BestAvailableEncryption(b'1999')
+            encryption_algorithm = serialization.BestAvailableEncryption(str.encode(pw))
         )
 
         public_keyOutput = public_key.public_bytes(
@@ -58,22 +59,23 @@ def save_keys(keys_file_name, keys, pw):
         savefile = open(keys_file_name, "wb")
         pickle.dump(keysOutput, savefile)
         savefile.close()
-    else:
-        return 'Wrong password'
+    
 
 def load_keys(key_names, pw):
-    if pw == '1999':
+   
         loadfile = open(key_names, "rb")
         keys = pickle.load(loadfile)
         loadfile.close()
 
         private_key = keys[0]
         public_key  = keys[1]
-       
         
-        private_key = serialization.load_pem_private_key(private_key,password=b'1999')
+        try:
+            private_key = serialization.load_pem_private_key(private_key,password=str.encode(pw), backend=default_backend())
+        except ValueError:
+            raise Exception("Incorrect password")
         public_key = serialization.load_pem_public_key(public_key)
 
         keys = (private_key,public_key)
         return keys
-    return 'Wrong password'
+  
