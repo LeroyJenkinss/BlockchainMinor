@@ -18,9 +18,9 @@ hasName = blake2b(name.encode('UTF-8'),digest_size=hashsize).hexdigest()
 
 # use gen_random_string() to see if you can find a collision
 countCol = 0
-for _ in range(1000):
+for _ in range(100000):
 
-   randomResult =  gen_random_string(_).rstrip()
+   randomResult =  gen_random_string(8).rstrip()
    
    if randomResult == hasName:
        print(gen_random_string(_) + ' ' +  gen_random_string(_).rstrip() + ' ' + randomResult+ ' '+ hasName)
