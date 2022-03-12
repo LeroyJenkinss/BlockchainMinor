@@ -13,34 +13,30 @@ class CBlock:
         self.leadingNumbers = leadingNumbers
         
 
-        if self.previousBlock != None:
-            self.previousHash = self.sha256(self.previousBlock.data)
-        if self.data != None:
-            self.CurrentHash = self.sha256(self.data)
-
     def sha256(self,message):
         return hashlib.sha256(message.encode('UTF-8')).hexdigest()
 
     def mine(self, leading_zeros):
         self.leadingNumbers = leading_zeros
         prefix = '0' * self.leadingNumbers
+        digest = ''
         for i in range(1000):
             if self.previousBlock == None:
-                digest = self.sha256(str(self.data) + str(i))    
+                digest = self.sha256(str(self.data) + str(i))   
             else:
-                digest = self.sha256(str(self.previousBlock.data) + str(i))
+                digest = self.sha256(str(self.previousHash) + str(i))
             if digest.startswith(prefix):
-                print ("after " + str(i) + " iterations found nonce: "+ digest)
-                digest = self.CurrentHash
+                if self.previousBlock != None:
+                    self.previousHash = self.CurrentHash
+                    self.CurrentHash = digest
                 return digest
 
 
     def is_valid_hash(self):
-         
-#  B1 = CBlock('data1', Gn)
-        if self.previousBlock.data != None:
-            if CBlock(self.previousBlock.data,self.previousBlock) == self.previousBlock.CurrentHash:
-                
+        if self.previousBlock == None:
+            return True
+        if self.previousBlock != None:
+            if self.previousHash == self.previousBlock.CurrentHash and self.previousHash != None and self.previousBlock.CurrentHash != None:
                 return True
             return False
         
