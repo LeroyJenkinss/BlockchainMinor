@@ -4,7 +4,7 @@ import string
 
 class CBlock:
     
-    def __init__(self, data=None, previousBlock=None, hashsize=1, previousHash=None):
+    def __init__(self, data=None, previousBlock=None, previousHash=None, hashsize=1):
         self.data = data
         self.previousBlock = previousBlock
         self.hashsize = hashsize
