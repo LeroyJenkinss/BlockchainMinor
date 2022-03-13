@@ -1,27 +1,23 @@
-from hashlib import blake2b
-import hashlib
-import string 
+          
+from cryptography.hazmat.primitives import hashes
+import inspect
 
 class CBlock:
-    
-    def __init__(self, data=None, previousBlock=None, previousHash=None, hashsize=1):
+    previousHash = None
+    previousBlock = None
+    data = None
+    def __init__(self, data, previousBlock):
         self.data = data
         self.previousBlock = previousBlock
-        self.hashsize = hashsize
-        if self.previousBlock != None and self.previousBlock.data != None:
-            if isinstance(self.previousBlock.data, str):
-                self.previousHash = hashlib.sha256(self.previousBlock.data.encode()).hexdigest()
-            elif isinstance(self.previousBlock.data, bytes):
-                decodeData = self.previousBlock.data.decode('UTF-8')
-                self.previousHash = hashlib.sha256(decodeData.encode('UTF-8')).hexdigest()
-            elif isinstance(self.previousBlock.data, int):
-                strInt = str(self.previousBlock.data)
-                self.previousHash = hashlib.sha256(strInt.encode()).hexdigest()
-            elif isinstance(self.previousBlock.data, object):
-                self.previousHash = hash(self.previousBlock.data)     
-    
+        if previousBlock is not None:
+            self.previousHash = previousBlock.computeHash()
+
     def computeHash(self):
-        if  isinstance(self.data, str):
-            return hashlib.sha256(self.data.encode('UTF-8')).hexdigest()
-        elif isinstance(self.data, bytes):
-            return hashlib.sha256(self.data).hexdigest()
+        global hash1
+        try:
+            hash1 = (str(self.data.string) + str(self.data.num))
+        except:
+            hash1 = str(self.data)
+        if self.previousHash is not None:
+            hash1 = hash1 + str(self.previousBlock.computeHash())
+        return hash(hash1)

@@ -27,6 +27,7 @@ if __name__ == '__main__':
     B4 = CBlock(12354, B3)
     B5 = CBlock(anotherClass('Hi there!'), B4)
     B6 = CBlock("child of B5", B5)
+    print(f'this is the hash  {B6.previousBlock.computeHash()}')
 
     for b, name in [(B1, 'B1'), (B2, 'B2'), (B3, 'B3'), (B4, 'B4'), (B5, 'B5')]:
         if b.previousBlock.computeHash() == b.previousHash:
@@ -43,6 +44,7 @@ if __name__ == '__main__':
     
     B5.data.num = 23678
     if B6.previousBlock.computeHash() == B6.previousHash:
+        print(f'this is the hash {B6.previousHash} and the other {B6.previousBlock.computeHash()}')
         print("Fail! Couldn't detect a tamper")
     else:
         print("Success! Tampering is detected")

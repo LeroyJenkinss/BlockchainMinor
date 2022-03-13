@@ -1,42 +1,48 @@
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import hashes
 import hashlib
-from hashlib import blake2b
 
 
 class CBlock:
-    def __init__(self,data,previousBlock = None, previousHash = None, CurrentHash = None, leadingNumbers = 2):
+    previousHash = None
+    CurrentHash = None
+    previousBlock = None
+    data = None
+    Nonce = None
+
+    def __init__(self, data, previousBlock=None):
         self.data = data
         self.previousBlock = previousBlock
-        self.previousHash = None
-        self.CurrentHash = None
-        self.leadingNumbers = leadingNumbers
-        
-
-    def sha256(self,message):
-        return hashlib.sha256(message.encode('UTF-8')).hexdigest()
+        self.CurrentHash = sha256(data)
+        self.Nonce = 1
+        if previousBlock is not None:
+            self.previousHash = self.previousBlock.CurrentHash
 
     def mine(self, leading_zeros):
-        self.leadingNumbers = leading_zeros
-        prefix = '0' * self.leadingNumbers
-        digest = ''
-        for i in range(1000):
-            if self.previousBlock == None:
-                digest = self.sha256(str(self.data) + str(i))   
-            else:
-                digest = self.sha256(str(self.previousHash) + str(i))
+        prefix = '0' * leading_zeros
+        if self.previousBlock is not None:
+            self.previousHash = self.previousBlock.CurrentHash
+        for i in range(1000000):
+            self.Nonce = i
+            digest = str(self.data) + str(i)
+            if self.previousBlock != None:
+                digest += str(self.previousHash)
+            digest = sha256(digest)
             if digest.startswith(prefix):
-                if self.previousBlock != None:
-                    self.previousHash = self.CurrentHash
-                    self.CurrentHash = digest
-                return digest
-
+                self.CurrentHash = digest
+                return
 
     def is_valid_hash(self):
-        if self.previousBlock == None:
-            return True
-        if self.previousBlock != None:
-            if self.previousHash == self.previousBlock.CurrentHash and self.previousHash != None and self.previousBlock.CurrentHash != None:
-                return True
-            return False
-        
+        currentBlock = self
+        check = True
+        while currentBlock is not None:
+            digest = str(currentBlock.data) + str(currentBlock.Nonce)
+            if currentBlock.previousBlock is not None:
+                digest += str(currentBlock.previousHash)
+            newHash = sha256(digest)
+            if newHash != currentBlock.CurrentHash:
+                check = False
+            currentBlock = currentBlock.previousBlock
+        return check
+
+
+def sha256(message):
+    return hashlib.sha256(message.encode('UTF-8')).hexdigest()
