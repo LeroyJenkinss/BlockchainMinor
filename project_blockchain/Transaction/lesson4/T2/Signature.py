@@ -8,28 +8,3 @@ def generate_keys():
     return private_key, public_key
 
 
-def sign(message, private):
-    signature = private.sign(
-    message,
-    padding.PSS(
-        mgf=padding.MGF1(hashes.SHA256()),
-        salt_length=padding.PSS.MAX_LENGTH
-    ),
-    hashes.SHA256())
-
-    return signature
-
-
-def verify(message, sig, public):
-    try:
-        output = public.verify(
-            sig,
-            message,
-            padding.PSS(
-                mgf=padding.MGF1(hashes.SHA256()),
-                salt_length=padding.PSS.MAX_LENGTH
-            ),
-            hashes.SHA256())
-        return True
-    except:
-        return False
