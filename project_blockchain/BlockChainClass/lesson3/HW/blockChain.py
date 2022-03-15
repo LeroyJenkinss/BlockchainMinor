@@ -5,16 +5,19 @@ class CBlock:
     previousHash = None
     CurrentHash = None
     previousBlock = None
+    previousNonce = None
     data = None
     Nonce = None
 
     def __init__(self, data, previousBlock=None):
         self.data = data
         self.previousBlock = previousBlock
-        self.CurrentHash = sha256(data)
+        
         self.Nonce = 1
+        self.CurrentHash = sha256(str(self.Nonce)+data)
         if previousBlock is not None:
             self.previousHash = self.previousBlock.CurrentHash
+            self.previousNonce = previousBlock.Nonce
 
     def mine(self, leading_zeros):
         prefix = '0' * leading_zeros
