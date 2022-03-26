@@ -8,7 +8,7 @@ class Tx:
         self.inputs     = []
         self.outputs    = []
         self.sigs       = []
-        self.reqd       = []
+        
 
     def add_input(self, from_addr, amount):
         self.inputs.append([from_addr,amount])
@@ -17,7 +17,7 @@ class Tx:
         self.outputs.append([to_addr, amount])
 
     def add_reqd(self, req):
-            self.reqd.append(req)
+            self.reqd = req
 
     def sign(self, private):
         in_outputs =self.conCatInOUtputs()
@@ -30,12 +30,8 @@ class Tx:
                 returnVal = verify(self.conCatInOUtputs(), a, self.inputs[0][0])
             if len(self.sigs) > 1 and a == self.sigs[1]:
                 returnVal = verify(self.conCatInOUtputs(), a, self.reqd)
-                print(verify(self.conCatInOUtputs(), a, self.reqd))
 
-        if len(self.reqd) != 0 and len(self.sigs) <= 1:
-            returnVal = False
-        
-        if len(self.inputs) < len(self.sigs):
+        if self.reqd != None and len(self.sigs) <= 1:
             returnVal = False
         
         outAmount = 0
