@@ -5,10 +5,24 @@ from Transaction import Tx
 class TxBlock (CBlock):
     
     def __init__(self, previousBlock):
-        pass
+        self.previousBlock = previousBlock
+        super().__init__(self.data, previousBlock)
+        self.tx_list = []
 
     def addTx(self, Tx_in):
-        pass
+        self.new_tx = TxBlock(Tx_in)
+        self.tx_list.append(self.new_tx)
     
     def is_valid(self):
-        pass
+        invalid = []
+        for a in self.tx_list:
+            if (Tx.is_valid(a.previousBlock)):
+               if(super().is_valid_hash()):
+                   invalid.append(True)
+            else:
+                invalid.append(False)
+        for a in invalid:
+            if a == False:
+                return False
+            return True
+    
