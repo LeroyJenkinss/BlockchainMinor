@@ -4,10 +4,12 @@ class Tx:
     outputs =None
     sigs = None
     reqd = None
+    
     def __init__(self):
         self.inputs     = []
         self.outputs    = []
         self.sigs       = []
+        self.reqd = []
         
 
     def add_input(self, from_addr, amount):
@@ -30,10 +32,8 @@ class Tx:
                 returnVal = verify(self.conCatInOUtputs(), a, self.inputs[0][0])
             if len(self.sigs) > 1 and a == self.sigs[1]:
                 returnVal = verify(self.conCatInOUtputs(), a, self.reqd)
-
-        if self.reqd != None and len(self.sigs) <= 1:
+        if len(self.reqd) != 0 and len(self.sigs) <= 1:
             returnVal = False
-        
         outAmount = 0
         inAmount = 0
         negativeIn = False
@@ -46,11 +46,9 @@ class Tx:
         for a in range(len(self.inputs)):
             inAmount += self.inputs[a][1]
             if self.inputs[a][1] < 0:
-                negativeIn = True
-        
+                negativeIn = True    
         if( outAmount > inAmount or negativeIn == True or negativeOut == True):
             returnVal = False
-        
         return returnVal
 
     def conCatInOUtputs(self):

@@ -9,15 +9,18 @@ class CBlock:
     data = None
     Nonce = None
 
+
     def __init__(self, data, previousBlock=None):
         self.data = data
         self.previousBlock = previousBlock
-        
         self.Nonce = 1
-        self.CurrentHash = sha256(str(self.Nonce)+data)
+        self.CurrentHash = sha256(str(data))
         if previousBlock is not None:
-            self.previousHash = self.previousBlock.CurrentHash
-            self.previousNonce = previousBlock.Nonce
+            self.previousHash = self.previousBlock
+    
+   
+
+    
 
     def mine(self, leading_zeros):
         prefix = '0' * leading_zeros
@@ -37,12 +40,14 @@ class CBlock:
         currentBlock = self
         check = True
         while currentBlock is not None:
-            digest = str(currentBlock.data) + str(currentBlock.Nonce)
+            digest = str(currentBlock.data)# + str(currentBlock.Nonce)
             if currentBlock.previousBlock is not None:
                 digest += str(currentBlock.previousHash)
             newHash = sha256(digest)
             if newHash != currentBlock.CurrentHash:
                 check = False
+            else:
+                check = True
             currentBlock = currentBlock.previousBlock
         return check
 

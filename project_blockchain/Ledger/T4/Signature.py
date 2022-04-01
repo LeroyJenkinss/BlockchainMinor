@@ -34,7 +34,7 @@ def sign(message, private_key):
     hashes.SHA256())
     return signature
 
-def verify(message, signature, pbc_ser):
+def verify(message, signature, public_key):
     try:
         public_key = load_pem_public_key(public_key)
         output = public_key.verify(
