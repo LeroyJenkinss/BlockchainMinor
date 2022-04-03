@@ -2,15 +2,13 @@ from BlockChain import CBlock
 from Signature import generate_keys, sign, verify
 from Transaction import Tx
 
-class TxBlock (CBlock):
-    transactions = None
-    curentHash = None
+
+class TxBlock(CBlock):
+    transactions = []
 
     def __init__(self, previousBlock):
         self.previousBlock = previousBlock
-        self.transactions = []
-
-        if self.previousHash is not None:
+        if self.previousBlock is not None:
             self.previousHash = self.previousBlock.computeHash()
 
     def addTx(self, Tx_in):
@@ -20,7 +18,6 @@ class TxBlock (CBlock):
         self.data.append(Tx_in)
         self.currentHash = self.computeHash()
 
-    
     def is_valid(self):
         if self.currentHash != self.computeHash():
             return False
@@ -32,4 +29,3 @@ class TxBlock (CBlock):
             if v is False:
                 return False
         return True
-    

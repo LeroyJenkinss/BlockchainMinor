@@ -22,8 +22,7 @@ class Tx:
         self.reqd = req
 
     def sign(self, private):
-        in_outputs =self.conCatInOUtputs()
-        self.sigs.append(sign(in_outputs, private))
+        self.sigs.append(sign(self.conCatInOUtputs(), private))
                
     def is_valid(self):
         returnVal = False
