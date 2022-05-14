@@ -9,6 +9,7 @@ class TxBlock (CBlock):
       self.previousBlock = previousBlock
       super().__init__(self.data, previousBlock)
       #CBlock(self.previousBlock)
+      
     def addTx(self, Tx_in):
       self.new_tx = TxBlock(Tx_in)
       self.tx_list = []
