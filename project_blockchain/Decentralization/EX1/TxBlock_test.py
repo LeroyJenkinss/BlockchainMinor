@@ -5,7 +5,7 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.backends import default_backend
 
 from Transaction import Tx
-from TxBlock import *       
+from TxBlock import *
 
 if __name__ == "__main__":
     alex_prv, alex_pbc = generate_keys()
@@ -20,7 +20,7 @@ if __name__ == "__main__":
     Tx1.sign(alex_prv)
 
     Tx2 = Tx()
-    Tx2.add_input(mike_pbc,1.1)
+    Tx2.add_input(mike_pbc, 1.1)
     Tx2.add_output(rose_pbc, 1)
     Tx2.sign(mike_prv)
 
@@ -29,12 +29,12 @@ if __name__ == "__main__":
     root.addTx(Tx2)
 
     Tx3 = Tx()
-    Tx3.add_input(rose_pbc,1.1)
+    Tx3.add_input(rose_pbc, 1.1)
     Tx3.add_output(alex_pbc, 1)
     Tx3.sign(rose_prv)
-    
+
     Tx4 = Tx()
-    Tx4.add_input(mike_pbc,1)
+    Tx4.add_input(mike_pbc, 1)
     Tx4.add_output(mara_pbc, 1)
     Tx4.add_reqd(rose_pbc)
     Tx4.sign(mike_prv)
@@ -48,15 +48,15 @@ if __name__ == "__main__":
     pickle.dump(B1, savefile)
     savefile.close()
 
-    loadfile = open("block.dat" ,"rb")
+    loadfile = open("block.dat", "rb")
     load_B1 = pickle.load(loadfile)
     loadfile.close()
 
     for b in [root, B1, load_B1, load_B1.previousBlock]:
         if b.is_valid():
-            print ("Success! Valid block is verified.")
+            print("Success! Valid block is verified.")
         else:
-            print ("Error! Valid block is not verified.")
+            print("Error! Valid block is not verified.")
 
     Tx5 = Tx()
     Tx5.add_input(rose_pbc, 1)
@@ -70,10 +70,9 @@ if __name__ == "__main__":
 
     for b in [B2, load_B1]:
         if b.is_valid():
-            print ("Error! Invalid block is verified.")
+            print("Error! Invalid block is verified.")
         else:
-            print ("Success! Invalid blocks is detected.")
-
+            print("Success! Invalid blocks is detected.")
 
     # Test mining rewards and tx fees
     B3 = TxBlock(B2)
@@ -84,7 +83,7 @@ if __name__ == "__main__":
     Tx6 = Tx()
     Tx6.add_output(mara_pbc, 25)
     B3.addTx(Tx6)
-    
+
     if B3.is_valid():
         print("Success! Block reward succeeded.")
     else:
@@ -104,7 +103,7 @@ if __name__ == "__main__":
     else:
         print("Error! Transaction fees failed.")
 
-    #Greedy miner
+    # Greedy miner
     B5 = TxBlock(B4)
     B5.addTx(Tx2)
     B5.addTx(Tx3)

@@ -5,6 +5,7 @@ from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives.serialization import load_der_public_key
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.serialization import *
+
 def generate_keys():
     privateIn = rsa.generate_private_key(public_exponent=65537, key_size=2048)
     private_key = privateIn.private_bytes(

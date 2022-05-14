@@ -12,23 +12,16 @@ class CBlock:
     data = None
     nonce = 0
 
+
+
     def __init__(self, data, previousBlock):
         self.data = data
         self.previousBlock = previousBlock
-        self.CurrentHash = self.computeHash(str(data))
+        self.CurrentHash = self.computeHash(str(self.data))
         self.nonce = 1
         if previousBlock is not None:
             self.previousHash = self.previousBlock
     
-    def computeHash(self):
-        global hash1
-        try:
-            hash1 = (str(self.data.string)+ str(self.previousHash))
-        except:
-            hash1 = str(self.data) + str(self.previousHash)
-            if self.previousHash is not None:
-                hash1 = hash1 + str(self.previousBlock.computeHash())
-                return hash(hash1)
 
     def is_valid(self):
         currentBlock = self
@@ -37,10 +30,17 @@ class CBlock:
             coming_block = str(currentBlock.data) #+ str(currentBlock.nonce)
             if currentBlock.previousBlock is not None:
                 coming_block += str(currentBlock.previousHash)
-        newHash = hash_func(coming_block)
-        if newHash != currentBlock.CurrentHash:
-            check = False
-        else:
-            check = True
-        currentBlock = currentBlock.previousBlock
+            newHash = self.computeHash(coming_block)
+            if newHash != currentBlock.CurrentHash:
+                check = False
+            else:
+                check = True
+            currentBlock = currentBlock.previousBlock
         return check
+
+    def computeHash(self, x):
+        hashed_block_of_data = hashlib.sha256(x.encode()).hexdigest()
+        return hashed_block_of_data
+
+
+

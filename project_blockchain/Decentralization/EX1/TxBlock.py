@@ -16,9 +16,8 @@ class TxBlock (CBlock):
 
     def is_valid(self):
         for i in self.tx_list:
-            if (Tx.is_valid(i.previousBlock)):
-                if(super().is_valid_hash()):
+            if Tx.is_valid(i.previousBlock):
+                if super().is_valid():
                     return True
-        else:
-          return False
-        
+            else:
+                return False

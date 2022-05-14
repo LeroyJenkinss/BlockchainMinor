@@ -1,4 +1,5 @@
 from Signature import *
+from BlockChain import  CBlock
 
 class Tx:
 
@@ -6,12 +7,16 @@ class Tx:
     outputs =None
     sigs = None
     reqd = None
+    validity2 = 0
+    verf_value = 0
+    sum_inputs = None
 
     def __init__(self):
         self.inputs = []
         self.outputs = []
         self.sigs = []
         self.reqd = []
+        self.sum_inputs = 0
 
     def add_input(self, from_addr, amount):
         self.inputs.append((from_addr, amount))
@@ -42,32 +47,32 @@ class Tx:
         self.sigs.append(sign(sigValues, private))
                
     def is_valid(self):
-        if(len(self.inputs) > len(self.outputs)):
+        if len(self.inputs) > len(self.outputs):
             return False
-    
-        if (len(self.reqd) > 0):     
-            if (self.sum_inputs >= self.sum_outputs):
-                if (self.positive_values_in > 0 and self.positive_values_out > 0):   
+
+        if len(self.reqd) > 0:
+            if self.sum_inputs >= self.sum_outputs:
+                if self.positive_values_in > 0 and self.positive_values_out > 0:
                     for i in range(len(self.sigs)):
                         verf_value = self.sumInOutPuts()
-                        if(i == 0):
-                            validity2 = verify(verf_value, self.sigs[i], self.inputs[i][0])
-                        if (i == 1):
+                        if i == 0:
+                            self.validity2 = verify(verf_value, self.sigs[i], self.inputs[i][0])
+                        if i == 1:
                             validity1 = verify(verf_value, self.sigs[i], self.reqd[0])
                         
-                            if (validity1 == validity2):
+                            if validity1 == self.validity2:
                                 return True
 
         else:
-            if (self.sum_inputs >= self.sum_outputs):
-                if (self.positive_values_in > 0 and self.positive_values_out > 0):
+            if self.sum_inputs >= self.sum_outputs:
+                if self.positive_values_in > 0 and self.positive_values_out > 0:
                     for i in range(len(self.sigs)):
-                        verf_value = self.sumInOutPuts()
+                        self.verf_value = self.sumInOutPuts()
                     
-                    validity = verify(verf_value, self.sigs[i], self.inputs[i][0])
+                    validity = verify(self.verf_value, self.sigs[i], self.inputs[i][0])
                     return validity
 
-    def variadic_arity(self):
-        self.sumInOutPuts= (*self.inputs, *self.outputs)
-        return self.asterisk_values
+    def sumInOutPuts(self):
+        sumInOutPuts= (*self.inputs, *self.outputs)
+        return sumInOutPuts
 
