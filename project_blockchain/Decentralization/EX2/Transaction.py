@@ -1,73 +1,53 @@
 from Signature import *
-from BlockChain import CBlock
-
+from cryptography.hazmat.primitives.serialization import *
 
 class Tx:
     inputs = None
-    outputs = None
+    outputs =None
     sigs = None
     reqd = None
-    validity2 = 0
-    verf_value = 0
-    sum_inputs = None
-
     def __init__(self):
         self.inputs = []
         self.outputs = []
         self.sigs = []
-        self.reqd = []
-        self.sum_inputs = 0
 
     def add_input(self, from_addr, amount):
         self.inputs.append((from_addr, amount))
-        self.sum_inputs = 0
-        for i in range(len(self.inputs)):
-            self.sum_inputs += self.inputs[i][1]
-        self.positive_values_in = 0
-        for i in range(len(self.inputs)):
-            if self.inputs[i][1] > 0:
-                self.positive_values_in = self.inputs[i][1]
+        pass
 
     def add_output(self, to_addr, amount):
         self.outputs.append((to_addr, amount))
-        self.sum_outputs = 0
-        for i in range(len(self.outputs)):
-            self.sum_outputs += self.outputs[i][1]
-        self.positive_values_out = 0
-        for i in range(len(self.outputs)):
-            if self.outputs[i][1] > 0:
-                self.positive_values_out = self.outputs[i][1]
-
-    def add_reqd(self, public_addr):
-        self.reqd.append(public_addr)
+        pass
 
     def sign(self, private):
-        sigValues = self.sumInOutPuts()
-        self.sigs.append(sign(sigValues, private))
+        self.sigs.append(sign(self.concactList(), private))
+
 
     def is_valid(self):
-        if len(self.reqd) > 0:
-            if self.sum_inputs >= self.sum_outputs:
-                if self.positive_values_in > 0 and self.positive_values_out > 0:
-                    for i in range(len(self.sigs)):
-                        verf_value = self.sumInOutPuts()
-                        if i == 0:
-                            self.validity2 = verify(verf_value, self.sigs[i], self.inputs[i][0])
-                        if i == 1:
-                            validity1 = verify(verf_value, self.sigs[i], self.reqd[0])
+        amountInput = 0
+        amountOutput = 0
+        for i in self.inputs:
+            amountInput += i[1]
+        for o in self.outputs:
+            amountOutput += o[1]
+        if amountOutput < 0 or amountInput < 0:
+            return False
+        if amountInput < amountOutput:
+            return False
+        for s in self.sigs:
+            if verify(self.concactList(), s, self.inputs[0][0]):
+                if self.reqd is None:
+                    return True
+                for ss in self.sigs:
+                    if verify(self.concactList(), ss, self.reqd):
+                        return True
+        return False
 
-                            if validity1 == self.validity2:
-                                return True
 
-        else:
-            if self.sum_inputs >= self.sum_outputs:
-                if self.positive_values_in > 0 and self.positive_values_out > 0:
-                    for i in range(len(self.sigs)):
-                        self.verf_value = self.sumInOutPuts()
+    def add_reqd(self, public):
+        self.reqd = public
 
-                    validity = verify(self.verf_value, self.sigs[i], self.inputs[i][0])
-                    return validity
 
-    def sumInOutPuts(self):
-        sumInOutPuts = (*self.inputs, *self.outputs)
-        return sumInOutPuts
+    def concactList(self):
+        result = [*self.inputs, *self.outputs]
+        return result
