@@ -19,6 +19,3 @@ class Tx:
         if self.outputs is None:
             self.outputs = []
         self.outputs.append([to_addr, amount])
-
-
-    
